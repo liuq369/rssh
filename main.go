@@ -205,7 +205,7 @@ func main() {
 	flag.StringVar(&host, "config", "./config.yml", "config file for yaml list")
 	flag.StringVar(&exec, "exec", "id", "exec shell command")
 	flag.StringVar(&grou, "host", "", "select host group name")
-	flag.StringVar(&file, "file", "", "upload file /etc/hosts:/root/hosts")
+	flag.StringVar(&file, "file", "", "upload file, example /etc/hosts:/home/user/hosts")
 	flag.BoolVar(&example, "example", false, "write example config file")
 	flag.BoolVar(&root, "root", false, "enable root privilege")
 	flag.Parse()
