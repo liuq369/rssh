@@ -168,7 +168,7 @@ func scpFileKeyPass(k keyPassInfo, f []string) error {
 	return err
 }
 
-func scpGo(ch chan int, s keyPassInfo, f []string) {
+func scpGo(ch chan bool, s keyPassInfo, f []string) {
 	var check interface{}
 	if err := scpFileKeyPass(s, f); err != nil {
 		check = err
@@ -176,10 +176,10 @@ func scpGo(ch chan int, s keyPassInfo, f []string) {
 		check = "OK"
 	}
 	fmt.Println(f[0]+" --> "+s.hostname+":"+f[1], check)
-	ch <- 1
+	ch <- true
 }
 
-func sshGo(ch chan int, s keyPassInfo, e string) {
+func sshGo(ch chan bool, s keyPassInfo, e string) {
 	out, err := sshKeyPassExec(s, e)
 	fmt.Printf("%c[1;40;32m%s%c[0m", 0x1B, "> ", 0x1B)
 	if err != nil {
@@ -192,7 +192,7 @@ func sshGo(ch chan int, s keyPassInfo, e string) {
 		}
 	}
 
-	ch <- 1
+	ch <- true
 }
 
 func main() {
@@ -247,16 +247,17 @@ Host:
 	}
 
 	// 获取验证信息
+	var filePass string
 	fileUser, err1 := hostList.Get("Auth.user")
 	fileKye, err2 := hostList.Get("Auth.file")
-	filePass, err3 := hostList.Get("Auth.pass")
-	errorr(err1, err2, err3)
+	errorr(err1, err2)
+	print("Password: ")
+	fmt.Scan(&filePass)
 
 	// 警告特权用户执行
 	if fileUser == "root" && !(root) {
 		errorr(fmt.Errorf("prevent (root) privileged from executing, or enable -root"))
-	}
-	if root {
+	} else {
 		fileUser = "root"
 	}
 
@@ -285,6 +286,7 @@ Host:
 	}
 
 	r := len(baseAuthInfo)
+	chs := make([]chan bool, r)
 	if len(file) != 0 {
 
 		// scp 方式
@@ -298,34 +300,25 @@ Host:
 			errorr(fmt.Errorf("only allow uploads to $HOME, or enable -root"))
 		}
 
-		chs := make([]chan int, r)
 		for i := 0; i < r; i++ {
-			chs[i] = make(chan int)
+			chs[i] = make(chan bool)
 			go scpGo(chs[i], baseAuthInfo[i], f)
 		}
-
-		for _, ch := range chs {
-			<-ch
-		}
-
-		//输出执行时间
-		fmt.Println("---\ntime:", time.Since(start))
-
 	} else {
 
 		// ssh 方式
-		chs := make([]chan int, r)
 		fmt.Println()
 		for i := 0; i < r; i++ {
-			chs[i] = make(chan int)
+			chs[i] = make(chan bool)
 			go sshGo(chs[i], baseAuthInfo[i], exec)
 		}
-
-		for _, ch := range chs {
-			<-ch
-		}
-
-		//输出执行时间
-		fmt.Println("---\ntime:", time.Since(start))
 	}
+
+	// 等待结束
+	for _, ch := range chs {
+		<-ch
+	}
+
+	//输出执行时间
+	fmt.Println("---\ntime:", time.Since(start))
 }
