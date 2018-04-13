@@ -225,7 +225,6 @@ func main() {
 		outputWriter.WriteString(`Auth:
     user: user
     file: /home/liuq369/.ssh/id_rsa-test-auto-login
-    pass: passwd
 
 Host:
     website:
