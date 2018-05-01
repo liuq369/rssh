@@ -1,27 +1,27 @@
 ##### 命令参数列表
 
 ```
-shell> ./rssh -h
+shell> ./rssh -help
 Usage of ./rssh:
-  -config string
+  -c string
        config file for yaml list (default "./config.yml")
+  -e string
+       exec shell command
   -example
        write example config file
-  -exec string
-       exec shell command (default "id")
-  -file string
+  -f string
        upload file, example /etc/hosts:/home/user/hosts
-  -host string
+  -h string
        exec host group name
-  -root
-       enable root privilege
 ```
 
 
 ##### 执行命令
 
 ```
-shell> ./rssh -host website -exec 'df -h /'
+shell> ./rssh -host website -e 'df -h /'
+Password:
+---
 
 > 192.168.100.201:22
 Filesystem Size Used Avail Use% Mounted on
@@ -41,9 +41,11 @@ time: 102.160669ms
 ##### 上传文件
 
 ```
-shell> ./rssh -host website -file '/etc/hosts:/home/user/hosts'
-/etc/hosts --> 192.168.100.202:22:/home/user/hosts OK
-/etc/hosts --> 192.168.100.201:22:/home/user/hosts OK
+shell> ./rssh -host website -f '/etc/hosts:/home/user/hosts'
+Password:
+---
+/etc/hosts 192.168.100.202:22 -> /home/user/hosts OK
+/etc/hosts 192.168.100.201:22 -> /home/user/hosts OK
 ---
 time: 84.508462ms
 ```
