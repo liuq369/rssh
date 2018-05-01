@@ -23,12 +23,12 @@ shell> ./rssh -host website -e 'df -h /'
 Password:
 ---
 
-> 192.168.100.201:22
+> test-host-1
 Filesystem Size Used Avail Use% Mounted on
 /dev/mapper/VolGroup-lv_root
 50G 5.9G 41G 13% /
 
-> 192.168.100.202:22
+> test-host-2
 Filesystem Size Used Avail Use% Mounted on
 /dev/mapper/VolGroup-lv_root
 50G 5.9G 41G 13% /
