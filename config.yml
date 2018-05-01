@@ -1,7 +1,19 @@
 Auth:
     user: user
-    file: /home/liuq369/.ssh/id_rsa-test-auto-login
-    pass: passwd
+    file: /home/user/.ssh/releases
+
+Host:
+    website:
+        - 192.168.100.201:22
+        - 192.168.100.202:22
+    test:
+        - 192.168.100.203:22
+
+[or]
+
+Auth:
+    user: user
+
 Host:
     website:
         - 192.168.100.201:22
