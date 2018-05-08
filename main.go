@@ -347,6 +347,8 @@ func main() {
 	if *exam {
 		if err := args.examp(); err != nil {
 			fmt.Println(err)
+			os.Exit(1)
+		} else {
 			os.Exit(0)
 		}
 	}
